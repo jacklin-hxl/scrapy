@@ -109,15 +109,15 @@ class ZhihuLoginService(BaseService):
                     print("识别码：{pic_str}".format(pic_str=pic_str))
                 else:
                     print("识别失败")
-                    return
+                    pic_str = "null"
                 self.brower.find_element_by_xpath('//*[@id="root"]/div/main/div/div/div/div[1]/div/form/div[4]/div/div/label/input').send_keys(pic_str)
             botton.click()
         cookies = self.brower.get_cookies()
         cookies_dict = {}
         for cookie in cookies:
-            cookie_dict[cookie['name']] = cookie['value']
+            cookies_dict[cookie['name']] = cookie['value']
         self.brower.close()
-        return cookie_dict
+        return cookies_dict
 
 
 if __name__ == "__main__":
