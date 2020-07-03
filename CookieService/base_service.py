@@ -6,6 +6,6 @@ class BaseService(metaclass=abc.ABCMeta):
     def login(self):
         pass
 
-    # @abc.abstractmethod
-    # def check_cookie(self,cookie_dict):
-    #     pass
+    @abc.abstractmethod
+    def check_cookie(self,cookie_dict):
+        pass
