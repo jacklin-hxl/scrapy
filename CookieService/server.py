@@ -68,7 +68,7 @@ class CookiesServer():
         # print("start check cookie")
         check_executor = ThreadPoolExecutor(max_workers=5)
         for srv in self.service_list:
-            task = login_executor.submit(partial(self.check_cookie_service,srv))
+            task = check_executor.submit(partial(self.check_cookie_service,srv))
             task_list.append(task)
         for future in as_completed(task_list):
             data = future.result()
