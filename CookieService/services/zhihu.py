@@ -43,7 +43,7 @@ class ZhihuLoginService(BaseService):
             time.sleep(3)
             notify_element = self.brower.find_element_by_class_name("AppHeader-userInfo")
             return True
-        except Exception as e:
+        except:
             return False
 
     def check_cookie(self,cookie_dict):
