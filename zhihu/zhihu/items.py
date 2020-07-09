@@ -21,7 +21,7 @@ class ZhihuQuestionItem(scrapy.Item):
     content = scrapy.Field()
     answer_num = scrapy.Field()
     comments_num = scrapy.Field()
-    watch_user_num = scrapy.Field()
+    attention_num = scrapy.Field()
     click_num = scrapy.Field()
     crawl_time = scrapy.Field()
 
