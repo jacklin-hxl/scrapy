@@ -10,7 +10,7 @@ REDIS_PORT = 6379
 ACCOUNTS = {
     "zhihu":{
         "username":"18355053764",
-        "password":"2468gggg",
+        "password":"13579gggg",
         "cookie_key":"zhihu:cookies",
         "max_cookie_nums":5,
         "check_interval":30,

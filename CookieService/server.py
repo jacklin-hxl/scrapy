@@ -44,14 +44,14 @@ class CookiesServer():
             srv_name = srv.name
             all_cookies = self.redis_cli.smembers(self.settings.ACCOUNTS[srv_name]["cookie_key"])
             for cookie_str in all_cookies:
-                print("get cookie: {}".format(cookie_str))
+                # print("get cookie: {}".format(cookie_str))
                 cookie_dict = json.loads(cookie_str)
                 srv_cli = srv(self.settings)
                 valid = srv_cli.check_cookie(cookie_dict)
                 if valid:
                     print("cookie is valid")
                 else:
-                    pritn("cookie is invalid,delete cookie")
+                    print("cookie is invalid,delete cookie")
                     self.redis_cli.srem(self.settings.ACCOUNTS[srv_name]["cookie_key"],cookie_str)
             # 防止请求频繁造成有效cookie失效，设置延时
             interval = self.settings.ACCOUNTS[srv_name]["check_interval"]
@@ -72,4 +72,3 @@ class CookiesServer():
             task_list.append(task)
         for future in as_completed(task_list):
             data = future.result()
-            print(data)

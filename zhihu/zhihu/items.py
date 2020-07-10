@@ -14,7 +14,7 @@ class ZhihuItem(scrapy.Item):
     pass
 
 class ZhihuQuestionItem(scrapy.Item):
-    zhihu_id = scrapy.Field()
+    question_id = scrapy.Field()
     topics = scrapy.Field()
     url = scrapy.Field()
     title = scrapy.Field()
@@ -26,7 +26,7 @@ class ZhihuQuestionItem(scrapy.Item):
     crawl_time = scrapy.Field()
 
 class ZhihuAnswerItem(scrapy.Item):
-    zhihu_id = scrapy.Field() 
+    answer_id = scrapy.Field() 
     url = scrapy.Field() 
     question_id = scrapy.Field()
     author_id = scrapy.Field()
