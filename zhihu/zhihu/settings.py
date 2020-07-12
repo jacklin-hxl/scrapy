@@ -62,9 +62,10 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
+ITEM_PIPELINES = {
 #    'zhihu.pipelines.ZhihuPipeline': 300,
-#}
+   "zhihu.pipelines.MysqlTwistedPipline":1
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -89,3 +90,9 @@ ROBOTSTXT_OBEY = False
 
 REDIS_HOST = "127.0.0.1"
 REDIS_PORT = 6379
+
+
+MYSQL_HOST="127.0.0.1"
+MYSQL_DBNAME="zhihu_spider"
+MYSQL_USER="root"
+MYSQL_PASSWORD="admin123"
