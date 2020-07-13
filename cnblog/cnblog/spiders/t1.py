@@ -4,7 +4,7 @@ from urllib import parse
 import json
 
 import scrapy
-from cnblog.items import t1Item,t1ItemLoader
+from cnblog.items import t1Item,    
 from cnblog.utils.common import get_md5
 from scrapy.loader import ItemLoader
 

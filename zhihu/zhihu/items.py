@@ -3,7 +3,7 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 import scrapy
-from scrapy.loader.processors import Join, MapCompose,TakeFirst,Identity
+from scrapy.loader.processors import Join, MapCompose,TakeFirst,Identity,Compose
 from scrapy.loader import ItemLoader
 
 
@@ -15,6 +15,7 @@ class ZhihuItem(scrapy.Item):
 class ZhihuItemLoader(ItemLoader):
     topics_in = Identity()
     topics_out = Join(",")
+    default_input_processor = TakeFirst()
     default_output_processor = TakeFirst()
 
 def handle_num(value):
@@ -95,7 +96,7 @@ class ZhihuAnswerItem(scrapy.Item):
             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             on duplicate key update
             content=values(content),
-            parise_num=values(answer_num),
+            parise_num=values(parise_num),
             comments_num=values(comments_num),
             update_time=values(update_time),
             crawl_time=values(crawl_time),

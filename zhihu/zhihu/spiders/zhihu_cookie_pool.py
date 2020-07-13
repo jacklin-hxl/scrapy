@@ -3,10 +3,11 @@ import json
 import re
 import datetime
 import urllib
+import time
 
 import scrapy
 from scrapy.loader import ItemLoader
-from zhihu.items import ZhihuQuestionItem,ZhihuAnswerItem
+from zhihu.items import ZhihuQuestionItem,ZhihuAnswerItem,ZhihuItemLoader
 import redis
 
 class ZhihuCookiePoolSpider(scrapy.Spider):
@@ -52,7 +53,7 @@ class ZhihuCookiePoolSpider(scrapy.Spider):
     def parse_question(self,response):
         match_obj = re.search("(.*zhihu.com/question/(\d+))(/|$).*", response.url)
         question_id = int(match_obj.group(2))
-        item_loader = ItemLoader(item=ZhihuQuestionItem(),response=response)
+        item_loader = ZhihuItemLoader(item=ZhihuQuestionItem(),response=response)
         item_loader.add_css("title","h1.QuestionHeader-title::text")
         item_loader.add_css("content",".QuestionHeader-detail .RichText.ztext::text")
         item_loader.add_value("url",response.url)
@@ -61,12 +62,12 @@ class ZhihuCookiePoolSpider(scrapy.Spider):
         item_loader.add_xpath("attention_num","//div[contains(text(),'关注者')]/following-sibling::strong/text()")
         item_loader.add_css("comments_num",".QuestionHeader-Comment button::text")
         item_loader.add_xpath("answer_num","//*[@class='List-headerText']//span/text()[1]")
-        item_loader.add_css("click_num","//div[contains(text(),'被浏览')]/following-sibling::strong/text()")
-        item_loader.add_value("crawl_time",datetime.datetime.now())
-        
+        item_loader.add_xpath("click_num","//div[contains(text(),'被浏览')]/following-sibling::strong/text()")
+        item_loader.add_value("crawl_time",str(datetime.datetime.now()))
         question_item = item_loader.load_item()
-        yield scrapy.Request(self.start_answer_url.format(question_id=question_id), headers=self.headers, callback=self.parse_answer)
+
         yield question_item
+        yield scrapy.Request(self.start_answer_url.format(question_id=question_id), headers=self.headers, callback=self.parse_answer)
         
     def parse_answer(self,response):
         ans_json = json.loads(response.text)
@@ -81,12 +82,12 @@ class ZhihuCookiePoolSpider(scrapy.Spider):
             answer_item["author_id"] = answer["author"]["id"]
             answer_item["parise_num"] = answer["voteup_count"]
             answer_item["comments_num"] = answer["comment_count"]
-            answer_item["create_time"] = answer["created_time"]
-            answer_item["update_time"] = answer["updated_time"]
-            answer_item["crawl_time"] = datetime.datetime.now()
+            answer_item["create_time"] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(answer["created_time"]))
+            answer_item["update_time"] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(answer["updated_time"]))
+            answer_item["crawl_time"] = str(datetime.datetime.now())
             answer_item["content"] = answer["content"]
 
-            yield answer_item
+        yield answer_item
 
         if not is_end:
             yield scrapy.Request(next_url, headers=self.headers, callback=self.parse_answer)
