@@ -58,10 +58,10 @@ class ZhihuCookiePoolSpider(scrapy.Spider):
         item_loader.add_value("url",response.url)
         item_loader.add_value("question_id",question_id)
         item_loader.add_css("topics",".QuestionHeader-topics #null-toggle::text")
-        item_loader.add_css("attention_num",".NumberBoard-itemValue::text")
+        item_loader.add_xpath("attention_num","//div[contains(text(),'关注者')]/following-sibling::strong/text()")
         item_loader.add_css("comments_num",".QuestionHeader-Comment button::text")
         item_loader.add_xpath("answer_num","//*[@class='List-headerText']//span/text()[1]")
-        item_loader.add_css("click_num",".NumberBoard-itemValue::text")
+        item_loader.add_css("click_num","//div[contains(text(),'被浏览')]/following-sibling::strong/text()")
         item_loader.add_value("crawl_time",datetime.datetime.now())
         
         question_item = item_loader.load_item()

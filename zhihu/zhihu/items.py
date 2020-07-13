@@ -42,7 +42,7 @@ class ZhihuQuestionItem(scrapy.Item):
     comments_num = scrapy.Field(input_processor=MapCompose(extract_num,handle_num))
     answer_num = scrapy.Field(input_processor=MapCompose(handle_num),)
     attention_num = scrapy.Field(input_processor=MapCompose(handle_num),)
-    click_num = scrapy.Field(intput_processor=MapCompose(handle_num),output_processor=MapCompose(take_seconde),)
+    click_num = scrapy.Field(input_processor=MapCompose(handle_num),)
     crawl_time = scrapy.Field()
 
     def get_insert_sql(self):
