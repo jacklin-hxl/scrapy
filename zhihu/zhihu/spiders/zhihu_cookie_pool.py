@@ -9,6 +9,7 @@ import scrapy
 from scrapy.loader import ItemLoader
 from zhihu.items import ZhihuQuestionItem,ZhihuAnswerItem,ZhihuItemLoader
 import redis
+from w3lib.html import remove_tags
 
 class ZhihuCookiePoolSpider(scrapy.Spider):
     name = 'zhihu_cookie_pool'
@@ -80,14 +81,14 @@ class ZhihuCookiePoolSpider(scrapy.Spider):
             answer_item["url"] = answer["url"]
             answer_item["question_id"] = answer["question"]["id"]
             answer_item["author_id"] = answer["author"]["id"]
-            answer_item["parise_num"] = answer["voteup_count"]
+            answer_item["content"] = remove_tags(answer["content"])
+            answer_item["praise_num"] = answer["voteup_count"]
             answer_item["comments_num"] = answer["comment_count"]
             answer_item["create_time"] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(answer["created_time"]))
             answer_item["update_time"] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(answer["updated_time"]))
             answer_item["crawl_time"] = str(datetime.datetime.now())
-            answer_item["content"] = answer["content"]
 
-        yield answer_item
+            yield answer_item
 
         if not is_end:
             yield scrapy.Request(next_url, headers=self.headers, callback=self.parse_answer)

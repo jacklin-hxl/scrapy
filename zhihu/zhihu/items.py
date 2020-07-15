@@ -68,10 +68,10 @@ class ZhihuQuestionItem(scrapy.Item):
         params.append(self.get("url",""))
         params.append(self.get("title",""))
         params.append(self.get("content",""))
-        params.append(self.get("answer_num",-1))
-        params.append(self.get("comments_num",-1))
-        params.append(self.get("attention_num",-1))
-        params.append(self.get("click_num",-1))
+        params.append(self.get("answer_num",0))
+        params.append(self.get("comments_num",0))
+        params.append(self.get("attention_num",0))
+        params.append(self.get("click_num",0))
         params.append(self.get("crawl_time","1970-01-01 00:00:00"))
 
         return insert_sql,params
@@ -82,7 +82,7 @@ class ZhihuAnswerItem(scrapy.Item):
     question_id = scrapy.Field()
     author_id = scrapy.Field()
     content = scrapy.Field()
-    parise_num = scrapy.Field()
+    praise_num = scrapy.Field()
     comments_num = scrapy.Field()
     create_time = scrapy.Field()
     update_time = scrapy.Field()
@@ -91,15 +91,15 @@ class ZhihuAnswerItem(scrapy.Item):
     def get_insert_sql(self):
         insert_sql = """
             insert into zhihu_answer(
-            answer_id,question_id,url,author_id,content,parise_num,comments_num,create_time,update_time,crawl_time
+            answer_id,question_id,url,author_id,content,praise_num,comments_num,create_time,update_time,crawl_time
             )
             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             on duplicate key update
             content=values(content),
-            parise_num=values(parise_num),
+            praise_num=values(praise_num),
             comments_num=values(comments_num),
             update_time=values(update_time),
-            crawl_time=values(crawl_time),
+            crawl_time=values(crawl_time)
         """
         params = []
         params.append(self.get("answer_id",""))
@@ -107,8 +107,8 @@ class ZhihuAnswerItem(scrapy.Item):
         params.append(self.get("url",""))
         params.append(self.get("author_id",""))
         params.append(self.get("content",""))
-        params.append(self.get("parise_num",-1))
-        params.append(self.get("comments_num",-1))
+        params.append(self.get("praise_num",0))
+        params.append(self.get("comments_num",0))
         params.append(self.get("create_time","1970-01-01 00:00:00"))
         params.append(self.get("update_time","1970-01-01 00:00:00"))
         params.append(self.get("crawl_time","1970-01-01 00:00:00"))
