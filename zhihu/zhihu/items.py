@@ -5,8 +5,9 @@
 import scrapy
 from scrapy.loader.processors import Join, MapCompose,TakeFirst,Identity,Compose
 from scrapy.loader import ItemLoader
-
-
+from models.es_types import ZhihuAnswerType,ZhihuQuestionType
+from elasticsearch_dsl.connections import connections
+es = connections.create_connection(ZhihuQuestionType._doc_type.using)
 class ZhihuItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
@@ -33,7 +34,25 @@ def take_seconde(values):
     for value in values:
         value = value
     return value
+def gen_suggests(index,info_tuple):
+    used_words = set()
+    suggests = []
+    anylyzed_words = set()
+    for text,weight in info_tuple:
+        if text:
+            # 调用es的analy
+            words = es.indices.analyze(index=index,analyzer="ik_max_word",params={'filter':["lowercase"]},body=text)["tokens"]
+            for r in words:
+                if len(r["token"])>1:
+                    anylyzed_words.add(r["token"])
+            # anylyzed_words = set([r["token"] for r in words if len(r["token"])>1])
+            new_words = anylyzed_words - used_words
+        else:
+            new_words = set()
+        if new_words:
+            suggests.append({"input":list(new_words),"weight":weight})
 
+    return suggests
 class ZhihuQuestionItem(scrapy.Item):
     question_id = scrapy.Field()
     topics = scrapy.Field()
@@ -76,6 +95,22 @@ class ZhihuQuestionItem(scrapy.Item):
 
         return insert_sql,params
 
+    def save_to_es(self):
+        article = ZhihuQuestionType()
+        article.question_id = self.get("question_id","")
+        article.topics = self.get("topics","")
+        article.url = self.get("url","")
+        article.title = self.get("title","")
+        article.content = self.get("content","")
+        article.answer_num = self.get("answer_num",0)
+        article.comments_num = self.get("comments_num",0)
+        article.attention_num = self.get("attention_num",0)
+        article.click_num = self.get("click_num",0)
+        article.crawl_time = self.get("crawl_time","1970-01-01 00:00:00")
+
+        article.suggest = gen_suggests(article._doc_type.index,((article.title,10),(article.topics,7),(article.content,4)))
+        article.save()
+
 class ZhihuAnswerItem(scrapy.Item):
     answer_id = scrapy.Field() 
     url = scrapy.Field() 
@@ -113,5 +148,22 @@ class ZhihuAnswerItem(scrapy.Item):
         params.append(self.get("update_time","1970-01-01 00:00:00"))
         params.append(self.get("crawl_time","1970-01-01 00:00:00"))
 
-
         return insert_sql,params
+
+    def save_to_es(self):
+        article = ZhihuAnswerType()
+        article.answer_id = self.get("answer_id","")
+        article.question_id = self.get("question_id","")
+        article.url = self.get("url","")
+        article.author_id = self.get("author_id","")
+        article.content = self.get("content","")
+        article.praise_num = self.get("praise_num",0)
+        article.comments_num = self.get("comments_num",0)
+        article.create_time = self.get("create_time","1970-01-01 00:00:00")
+        article.update_time = self.get("update_time","1970-01-01 00:00:00")
+        article.crawl_time = self.get("crawl_time","1970-01-01 00:00:00")
+
+        article.suggest = gen_suggests(article._doc_type.index,((article.content,10),))
+
+        article.save()
+        
