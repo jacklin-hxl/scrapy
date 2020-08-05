@@ -64,7 +64,8 @@ ROBOTSTXT_OBEY = False
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
 #    'zhihu.pipelines.ZhihuPipeline': 300,
-   "zhihu.pipelines.MysqlTwistedPipline":1
+#    "zhihu.pipelines.MysqlTwistedPipline":1,
+    "zhihu.pipelines.ElasticsearchPipeline":1,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
