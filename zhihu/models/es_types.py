@@ -20,12 +20,13 @@ class ZhihuQuestionType(DocType):
     topics = Text(analyzer="ik_max_word")
     url = Keyword()
     title = Text(analyzer="ik_max_word")
-    content = Text(analyzer="ik_max_word")
     comments_num = Integer()
     answer_num = Integer()
     attention_num = Integer()
     click_num = Integer()
+    create_time = Date()
     crawl_time = Date()
+    content = Text(analyzer="ik_max_word")
 
     class Meta:
         index = "zhihu"
@@ -33,16 +34,17 @@ class ZhihuQuestionType(DocType):
 
 class ZhihuAnswerType(DocType):
     suggest =Completion(analyzer=ik_analyzer)
+    title = Text(analyzer="ik_max_word")
     answer_id = Keyword()
     url = Keyword()
     question_id = Keyword()
     author_id = Keyword()
-    content = Text(analyzer="ik_max_word")
     praise_num = Integer()
     comments_num = Integer()
     create_time = Date()
     update_time = Date()
     crawl_time = Date()
+    content = Text(analyzer="ik_max_word")
 
     class Meta:
         index = "zhihu"
