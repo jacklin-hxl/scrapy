@@ -102,5 +102,13 @@ MYSQL_PASSWORD="admin123"
 RANDOMIZE_DOWNLOAD_DELAY = True
 DOWNLOAD_DELAY = 3
 
+# scrapy日志等级
+LOG_LEVEL = 'DEBUG'
+# CRITICAL - 严重错误
+# ERROR - 一般错误
+# WARNING - 警告信息
+# INFO - 一般信息
+# DEBUG - 调试信息
 
-LOG_LEVEL = 'INFO'
+# 记录日志文件路径
+LOG_FILE = "./scrapylog.log"

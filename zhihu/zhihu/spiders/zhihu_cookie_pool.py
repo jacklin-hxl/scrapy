@@ -50,7 +50,6 @@ class ZhihuCookiePoolSpider(scrapy.Spider):
     #         else:
     #             #如果不是question页面则直接进一步跟踪
     #             yield scrapy.Request(url, headers=self.headers, callback=self.parse)
-
     def parse(self, response):
         re_data = json.loads(response.text)
         next_url = re_data["paging"]["next"]
@@ -69,13 +68,7 @@ class ZhihuCookiePoolSpider(scrapy.Spider):
                 yield scrapy.Request(question_url,meta={"create_time":create_time,"question_id":question_id},headers=headers,callback=self.parse_question)
         yield scrapy.Request(next_url, headers=self.headers, callback=self.parse)
 
-
     def parse_question(self,response):
-        # headers = {
-        #     "HOST": "www.zhihu.com",
-        #     "Referer": "https://www.zhizhu.com",
-        #     'User-Agent': "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0"
-        #     }
         create_time = response.meta.get("create_time","")
         question_id = response.meta.get("question_id","")
         headers = {
@@ -101,7 +94,8 @@ class ZhihuCookiePoolSpider(scrapy.Spider):
 
         yield question_item
         yield scrapy.Request(self.start_answer_url.format(question_id=question_id), headers=headers, callback=self.parse_answer)
-        
+
+
     def parse_answer(self,response):
         ans_json = json.loads(response.text)
         # 同一个question下的answer数量太多，只取前五个，否则会影响question的爬取速度

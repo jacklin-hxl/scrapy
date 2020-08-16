@@ -28,7 +28,7 @@ class ZhihuItemLoader(ItemLoader):
 class handle_data():
 
     @staticmethod
-    def handle_num(cls,value):
+    def handle_num(value):
         if value != "添加评论":
             value = int(value.replace(",",""))
             return value
@@ -36,12 +36,12 @@ class handle_data():
             return 0
 
     @staticmethod
-    def extract_num(cls,value):
+    def extract_num(value):
         value = value.split(" ")[0]
         return value
 
     @staticmethod
-    def take_seconde(cls,values):
+    def take_seconde(values):
         for value in values:
             value = value
         return value
